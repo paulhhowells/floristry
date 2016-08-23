@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Card Table</title>
+    <style type="text/css">
+
+    /* Normalise */
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      color: #111;
+      background-color: #fff;
+      font-family: "Helvetica Neue", sans-serif;
+      font-size: 100%;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      line-height: 1.5;
+    }
+
+    /* Base Elements */
+    html {
+      /*-webkit-filter: grayscale(100%);
+      filter: grayscale(100%);*/
+    }
+
+    h1 {
+      font-size: 4em;
+      font-weight: 900;
+      line-height: 1.125;
+      letter-spacing: -5pt;
+
+      margin: 0 0 0.25em 0;
+      padding: 0;
+
+      color: #444;
+    }
+    h2,
+    h3 {
+      margin: 1.5em 0 0.25em 0;
+    }
+    p {
+      line-height: 1.5;
+      margin: 0 0 0.75em 0;
+      padding: 0;
+    }
+
+    /* Layout Styles */
+    .wrapper {
+      width: 60em;
+      margin: 0 auto;
+      padding: 1em;
+      background-color: #eee;
+      overflow: hidden;
+    }
+
+    /* Go flex width after [1280 : 72em] [1120 : 70em] [1024 : 64em] */
+    @media only screen and (min-width: 64em) {
+      .wrapper {
+        width: auto;
+        margin: 0 1em;
+      }
+    }
+
+    /* max-width = .wrapper width + padding */
+    /* Go full width Up to 62em */
+    @media only screen and (max-width: 62em) {
+      .wrapper {
+        width: auto;
+        margin: 0 0;
+      }
+    }
+
+    .boxes {
+      padding: 0.5em;
+
+      display: flexbox; /* IE10 */
+      display: flex;
+      flex-direction:          row;
+      flex-wrap:               wrap;
+      justify-content:         flex-start;
+      align-items:             flex-start;
+      align-content:           flex-start;
+
+      align-items:             stretch;
+      align-content:           stretch;
+
+      background-color: gray;
+    }
+    .box {
+      box-sizing: border-box;
+      display: inline-block; /* fallback, should be overridden by flexbox */
+      /*display: flexbox;  IE10 */
+      display: flex;
+
+      /* 12 = 11 + 0.5 + 0.5 */
+
+      width: 19em;
+      padding: 0.5em;
+
+      order:       0;
+      flex-grow:   1;
+      flex-shrink: 1;
+      flex-basis:  auto;
+      align-self:  auto;
+      flex-basis:  20em;
+    }
+    .box--double {
+      /* 24 = 23 + 0.5 + 0.5 */
+      width: 47em;
+      flex-grow: 2;
+      flex-basis:  48em;
+
+      width: 39em;
+      flex-basis: 40em;
+    }
+
+    .box__inner {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 0.5em;
+    }
+    .box.box--filler {
+      min-height: 0;
+      height: 0;
+      padding: 0;
+      background-color: #777;
+
+      /*
+      TODO: refactor: move to another class.
+      Derived from .chart
+      */
+      font-size: 0.875rem;
+    }
+
+    .adjust {
+      *zoom: 1;
+    }
+    .adjust:before,
+    .adjust:after {
+      content: " ";
+      display: table;
+      visibility: hidden;
+    }
+    .adjust:after {
+      clear: both;
+    }
+    .adjust__fix {
+      float: left;
+    }
+    .adjust__fix--10 {
+      width: 10em;
+    }
+    .adjust__fix--right,
+    .adjust__fix.right {
+      float: right;
+    }
+    .adjust__flex {
+      overflow: hidden; /* flex */
+    }
+    @media only screen and (max-width: 20em) {
+      /* TODO: this does not belong here as it is content & viewport specific. */
+      .adjust__fix,
+      .adjust__fix--right,
+      .adjust__fix.right {
+        float: none;
+      }
+      .adjust__fix--10 {
+        width: 100%;
+      }
+    }
+
+    /* Component Styles */
+    .chart {}
+    .chart svg {
+      width: 100%;
+    }
+
+    .cards {}
+    .card {
+      font-size: 0.875rem; /* 14px */
+    }
+    .card__inner {
+      background-color: hsl(360, 100%, 100%);
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    }
+
+    .intro {
+      font-size: 0.9375rem; /* 15 */
+      margin-bottom: 1em;
+    }
+    .intro p {
+      line-height: 1.125;
+      margin-bottom: 0.625em;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>card table</h1>
+        <div class="intro">
+          <p>An investigation into responsive card layouts.</p>
+          <p>Layout of cards is derived by a choosing a minimum width for the card.</p>
+          <p>(To do: probably needs to be made to degrade gracefully for versions of IE earlier than IE11).</p>
+        </div>
+      </header>
+      <main>
+        <div class="boxes">
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <ol style="list-style-type: lower-roman">
+                <li>Primary</li>
+                <li>Secondary</li>
+                <li>Tertiary</li>
+                <li>Quaternary</li>
+                <li>Quinary</li>
+                <li>Senary</li>
+                <!--
+                <li>Septenary</li>
+                <li>Octonary</li>
+                -->
+              </ol>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <ol style="list-style-type: lower-roman">
+                <li>Primary</li>
+                <li>Secondary</li>
+                <li>Tertiary</li>
+                <li>Quaternary</li>
+                <li>Quinary</li>
+                <li>Senary</li>
+              </ol>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+        </div>
+
+        <h3>Alternate order 01</h3>
+
+        <div class="boxes">
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <ol style="list-style-type: lower-roman">
+                <li>Primary</li>
+                <li>Secondary</li>
+                <li>Tertiary</li>
+                <li>Quaternary</li>
+                <li>Quinary</li>
+                <li>Senary</li>
+                <!--
+                <li>Septenary</li>
+                <li>Octonary</li>
+                -->
+              </ol>
+            </div>
+          </div>
+          <div class="box box--double card">
+            <div class="box__inner card__inner">
+              <p>But though I was so terrified by the idea of the seafaring man with one leg, I was far less afraid of the captain himself than anybody else who knew him.
+              </p>
+              <p>There were nights when he took a deal more rum and water than his head would carry; and then he would sometimes sit and sing his wicked, old, wild sea-songs, minding nobody; but sometimes he would call for glasses round and force all the trembling company to listen to his stories or bear a chorus to his singing.</p>
+              <p>Often I have heard the house shaking with "Yo-ho-ho, and a bottle of rum," all the neighbours joining in for dear life, with the fear of death upon them, and each singing louder than the other to avoid remark.</p>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+        </div>
+
+        <h3>Alternate order 02</h3>
+        <div class="boxes">
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box box--double card">
+            <div class="box__inner card__inner">
+              <ol style="list-style-type: upper-roman">
+                <li>Primary</li>
+                <li>Secondary</li>
+                <li>Tertiary</li>
+                <li>Quaternary</li>
+                <li>Quinary</li>
+                <li>Senary</li>
+              </ol>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="adjust">
+                <div class="adjust__fix right">
+                  <ul>
+                    <li>Perspicacious</li>
+                    <li>Salience</li>
+                    <li>Clemency</li>
+                    <li>Effervescence</li>
+                    <li>Erudition</li>
+                    <li>Effusive</li>
+                  </ul>
+                </div>
+                <div class="adjust__flex">
+                  <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(100,100)"><g class="disc"><path fill="hsl(20, 100%, 50%)" d="M6.0620016557793985e-15,-99A99,99,0,1,1,-6.0620016557793985e-15,99A99,99,0,1,1,6.0620016557793985e-15,-99M-5.51091059616309e-16,-3A3,3,0,1,0,5.51091059616309e-16,3A3,3,0,1,0,-5.51091059616309e-16,-3Z"></path></g></g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+        </div>
+
+        <h3>Alternate order 03</h3>
+        <div class="boxes">
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+          <div class="box card">
+            <div class="box__inner card__inner">
+              <div class="chart"></div>
+            </div>
+          </div>
+
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+          <div class="box box--filler"></div>
+        </div>
+      </main>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+    (function ($) {
+      "use strict";
+
+      var TAU = 2 * Math.PI;
+
+      $(function () { // readyState
+        var
+          chartSelection,
+          disc,
+          innerRadius = 2,
+          outerRadius = 100,
+          width = 200,
+          height = 200,
+          viewBox,
+          centreTransform;
+
+        viewBox = '0 0 ' + width + ' ' + height;
+        centreTransform = 'translate(' + width / 2 + ',' + height / 2 + ')';
+
+        chartSelection = d3.selectAll('.chart')
+          .insert('svg', ':first-child')
+          .attr('viewBox', viewBox)
+          .attr('preserveAspectRatio', 'xMidYMid meet')
+          .append('g');
+
+        chartSelection.append('g').attr('class', 'disc');
+
+        chartSelection.attr('transform', centreTransform);
+
+        disc = d3.arc()
+          .innerRadius(innerRadius + 1)
+          .outerRadius(outerRadius - 1)
+          .startAngle(0)
+          .endAngle(TAU);
+
+        chartSelection
+          .select('.disc')
+          .append('path')
+          .attr('fill', 'hsl(190, 70%, 70%)')
+          .attr('d', disc);
+
+      });
+    }(jQuery));
+    </script>
+  </body>
+</html>
